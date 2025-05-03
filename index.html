@@ -96,5 +96,56 @@
   <footer>
     &copy; 2025 SIOUniverse.com · Writing the Future of Meaning
   </footer>
+<!-- 新增功能：文章上传和展示 -->
+<div id="app" class="max-w-3xl mx-auto py-8">
+
+    <div class="bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-semibold mb-4">上传你的文章</h2>
+        <input v-model="newArticle.title" placeholder="文章标题" class="border rounded w-full p-2 mb-4">
+        <textarea v-model="newArticle.content" placeholder="文章内容" class="border rounded w-full p-2 h-32 mb-4"></textarea>
+        <button @click="uploadArticle" class="bg-blue-500 text-white py-2 px-4 rounded">上传文章</button>
+    </div>
+
+    <div class="mt-8 bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-semibold mb-4">已上传的文章</h2>
+        <ul>
+            <li v-for="(article, index) in articles" :key="index" class="mb-4">
+                <h3 class="text-lg font-semibold cursor-pointer text-blue-600" @click="article.open = !article.open">
+                    {{ article.title }}
+                </h3>
+                <p v-if="article.open" class="mt-2">{{ article.content }}</p>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- Vue.js CDN 引用 -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<script>
+new Vue({
+    el: '#app',
+    data: {
+        newArticle: { title: '', content: '' },
+        articles: []
+    },
+    methods: {
+        uploadArticle() {
+            if(this.newArticle.title && this.newArticle.content){
+                this.articles.push({
+                    title: this.newArticle.title,
+                    content: this.newArticle.content,
+                    open: false
+                });
+                this.newArticle.title = '';
+                this.newArticle.content = '';
+            }else{
+                alert('请填写标题和内容');
+            }
+        }
+    }
+});
+</script>
 </body>
 </html>
