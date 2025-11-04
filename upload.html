@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF 上传</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .input-group { margin-bottom: 10px; }
+    label { margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <h1>上传 PDF 文件</h1>
+  <div class="input-group">
+    <label for="pdfFile">选择PDF文件:</label>
+    <input type="file" id="pdfFile" accept="application/pdf">
+  </div>
+  <div class="input-group">
+    <label for="token">GitHub Token:</label>
+    <input type="password" id="token" placeholder="输入用于上传的GitHub Token">
+  </div>
+  <button id="uploadBtn">上传PDF</button>
+
+  <h2>已上传的PDF</h2>
+  <ul id="fileList"></ul>
+
+  <script>
+    async function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function fetchPDFs() {
+      const owner = 'SIOWDS';
+      const repo = 'SIOUniverse';
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/pdfs`;
+      const response = await fetch(apiUrl);
+      const list = document.getElementById('fileList');
+      list.innerHTML = '';
+      if (response.ok) {
+        const data = await response.json();
+        data.forEach(item => {
+          const li = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = item.download_url;
+          link.textContent = item.name;
+          link.target = '_blank';
+          li.appendChild(link);
+          list.appendChild(li);
+        });
+      }
+    }
+
+    async function uploadPDF() {
+      const fileInput = document.getElementById('pdfFile');
+      const token = document.getElementById('token').value;
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('请选择PDF文件');
+        return;
+      }
+      if (!token) {
+        alert('请输入GitHub Token');
+        return;
+      }
+      const owner = 'SIOWDS';
+      const repo = 'SIOUniverse';
+      const fileName = encodeURIComponent(file.name);
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/pdfs/${fileName}`;
+      const base64 = await toBase64(file);
+      const content = base64.split(',')[1];
+      const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Upload ' + file.name,
+          content: content
+        })
+      });
+      if (response.ok) {
+        alert('上传成功');
+        fileInput.value = '';
+        document.getElementById('token').value = '';
+        fetchPDFs();
+      } else {
+        const res = await response.json();
+        alert('上传失败: ' + (res.message || response.statusText));
+      }
+    }
+
+    document.getElementById('uploadBtn').addEventListener('click', uploadPDF);
+    fetchPDFs();
+  </script>
+</body>
+</html>
