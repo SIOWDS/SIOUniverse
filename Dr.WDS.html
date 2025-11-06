@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>王博士个人出版专栏</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <header class="bg-gradient-to-br from-green-700 to-teal-600 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl font-bold">王博士个人出版专栏</h1>
+      <p class="mt-2 text-lg">了解王德生博士的个人经历与出版计划</p>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-10 space-y-8">
+    <!-- 简历部分 -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-4">简历</h2>
+      <p class="mb-2">王德生博士是一位跨学科的学者、思想家和企业家，长期致力于数学、哲学、人工智能与教育的融合。他提出了以主体（S）、互动（I）、客体（O）三元结构为核心的 SIO 本体论与知识论，强调知识和存在在互动中的生成。他同时是 WDS 意义三律理论的倡导者，聚焦创造、自由和幸福在知识创新中的重要作用。</p>
+      <p class="mb-2">在学术方面，王博士拥有数学和哲学双重背景，先后发表多篇论文并出版专著，为人工智能与认知科学的跨界研究开辟了新的路径。他也是人工智能领域的实践者，推动 AI 与人类主体协同共创的新范式。</p>
+      <p>除此之外，王博士热衷于教育创新，强调在教育过程中激发每一位学习者的主体性与创造力。他创立了 SIO Universe 平台，旨在汇聚研究者、作者、读者与智能系统共同构建意义的生态。</p>
+    </section>
+
+    <!-- 即将出版的专著名单 -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-4">即将出版的专著名单</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>《SIO 本体论：中西合璧的新典范》</li>
+        <li>《SIO 哲学入门》</li>
+        <li>《SIO 智慧导论》</li>
+        <li>《SIO 本体论入门》</li>
+        <li>《SIO Universe：主客互动知识论的应用实践》</li>
+      </ul>
+      <p class="mt-2">敬请期待上述专著的正式出版，届时您将能全面了解 SIO 理论体系的丰富内涵与实践价值。</p>
+    </section>
+
+    <div class="text-center">
+      <a href="index.html" class="text-blue-600 underline">返回首页</a>
+    </div>
+  </main>
+
+  <footer class="bg-gray-200 text-center py-4 text-sm text-gray-700">
+    © <span id="year"></span> Demai International PTE. LTD. 版权所有。
+  </footer>
+
+  <script>
+    // 动态更新年份
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
