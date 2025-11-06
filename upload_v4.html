@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上传PDF文件</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    button, input {
+      margin: 5px 0;
+      padding: 8px 12px;
+    }
+    #fileName {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>上传PDF文件</h1>
+  <div>
+    <button id="selectFileBtn">选择PDF文件</button>
+    <span id="fileName">未选择文件</span>
+    <input type="file" id="pdfFile" accept="application/pdf" style="display:none">
+  </div>
+  <div>
+    <input type="password" id="githubToken" placeholder="GitHub Token">
+  </div>
+  <div>
+    <button id="uploadBtn">上传PDF</button>
+  </div>
+  <h2>已上传的PDF文件</h2>
+  <div id="pdf-list"></div>
+  <p><a href="index.html">返回首页</a></p>
+
+  <script>
+    const selectBtn = document.getElementById('selectFileBtn');
+    const fileInput = document.getElementById('pdfFile');
+    const fileNameSpan = document.getElementById('fileName');
+
+    selectBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        fileNameSpan.textContent = fileInput.files[0].name;
+      } else {
+        fileNameSpan.textContent = '未选择文件';
+      }
+    });
+
+    async function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function fetchPDFs() {
+      const listDiv = document.getElementById('pdf-list');
+      listDiv.innerHTML = '';
+      try {
+        const res = await fetch('https://api.github.com/repos/SIOWDS/SIOUniverse/contents/pdfs');
+        const data = await res.json();
+        data.forEach(item => {
+          if (item.name.toLowerCase().endsWith('.pdf')) {
+            const link = document.createElement('a');
+            link.href = item.download_url;
+            link.textContent = item.name;
+            link.target = '_blank';
+            listDiv.appendChild(link);
+            listDiv.appendChild(document.createElement('br'));
+          }
+        });
+      } catch (error) {
+        console.error('获取列表失败', error);
+      }
+    }
+
+    async function uploadPDF() {
+      if (fileInput.files.length === 0) {
+        alert('请选择PDF文件');
+        return;
+      }
+      const token = document.getElementById('githubToken').value.trim();
+      if (!token) {
+        alert('请输入 GitHub Token');
+        return;
+      }
+      const file = fileInput.files[0];
+      const content = await toBase64(file);
+      const apiUrl = `https://api.github.com/repos/SIOWDS/SIOUniverse/contents/pdfs/${encodeURIComponent(file.name)}`;
+      const body = {
+        message: `Add ${file.name}`,
+        content: content
+      };
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'token ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+        const result = await res.json();
+        if (res.ok) {
+          alert('上传成功！');
+          fileInput.value = '';
+          fileNameSpan.textContent = '未选择文件';
+          fetchPDFs();
+        } else {
+          alert('上传失败: ' + (result.message || '未知错误'));
+        }
+      } catch (error) {
+        alert('上传失败: ' + error.message);
+      }
+    }
+
+    document.getElementById('uploadBtn').addEventListener('click', uploadPDF);
+    fetchPDFs();
+  </script>
+</body>
+</html>
