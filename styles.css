@@ -1,0 +1,14 @@
+phototext {
+    color: "#E4C562";
+}
+
+.phototext {
+  color: #E4C562;
+  font-family: serif;
+  text-align: center;/* width: 50%; */
+}
+
+p.phototext {
+    font-size: 0.5rem;
+    margin-bottom: 30px;
+}
