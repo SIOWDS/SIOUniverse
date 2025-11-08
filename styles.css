@@ -1,24 +1,22 @@
 body {
-  font-size: 1.125rem;
+  font-size: 1.3rem;
 }
 
 p {
-  font-size: 1.125rem;
+  font-size: 1.3rem;
 }
 
-
 .phototext {
-    color: "#E4C562";
+  color: "#E4C562";
 }
 
 .phototext {
   color: #E4C562;
   font-family: serif;
-  text-align: center;/* width: 50%; */
+  text-align: center;
 }
 
 p.phototext {
-  font-size: 1rem;
+  font-size: 1.3rem;
   margin-bottom: 30px;
-}
 }
